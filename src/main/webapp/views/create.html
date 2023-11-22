@@ -1,0 +1,69 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org" >
+<head>
+    <head>
+        <title>Manage Product</title>
+        <meta charset="utf-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+        <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.1/css/bootstrap.min.css">
+        <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.4/jquery.min.js"></script>
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.16.0/umd/popper.min.js"></script>
+        <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.1/js/bootstrap.min.js"></script>
+
+    </head>
+</head>
+<body>
+
+
+<h3>THÊM NHÂN VIÊN</h3>
+
+<form method="post" th:object="${newStudent}" enctype="multipart/form-data">
+    <table class="table">
+        <thead>
+        <td>NAME</td>
+        <td>ADDRESS</td>
+        <td>BIRTHDAY</td>
+        </thead>
+        <tbody>
+        <tr>
+            <td><input th:field="*{name}"><br>
+                <span style="color: red" th:if="${#fields.hasErrors('name')}" th:errors="*{name}"></span>
+            </td>
+
+            <td><input th:field="*{address}"><br>
+                <span style="color: red" th:if="${#fields.hasErrors('address')}" th:errors="*{address}"></span>
+            </td>
+            <td><input type="date" th:field="*{birthday}"></td>
+        </tr>
+
+        </tbody>
+        <thead>
+        <td>AVATAR</td>
+        <td>EMAIL</td>
+        <td>PHONE</td>
+        <td>CLASSROOM</td>
+        </thead>
+
+        <tbody>
+        <tr>
+            <td><input type="file" name="uppAvatar"></td>
+            <td><input th:field="*{email}"></td>
+            <td><input th:field="*{phone}"><br>
+                <span style="color: red" th:if="${#fields.hasErrors('phone')}" th:errors="*{phone}"></span>
+            </td>
+            <td><select th:field="*{classRoom}">
+                <option th:each="cr:${classRoomss}" th:value="${cr.id}" th:text="${cr.name}"></option>
+            </select></td>
+        </tr>
+        </tbody>
+
+    </table>
+
+    <td>
+        <button type="submit" class="btn btn-success">Create</button>
+    </td>
+
+
+</form>
+</body>
+</html>

@@ -1,0 +1,109 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+
+    <title>Manage Product</title>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.1/css/bootstrap.min.css">
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.4/jquery.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.16.0/umd/popper.min.js"></script>
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.1/js/bootstrap.min.js"></script>
+    <script src="//ajax.googleapis.com/ajax/libs/jquery/1.9.1/jquery.min.js"></script>
+
+</head>
+<body>
+<div class="container">
+    <h3><a href="/create" class="btn btn-success">CREATE</a></h3>
+
+    <form action="/find" method="get">
+        <input type="text" class="form-control" placeholder="Tìm Kiếm" name="name" id="findName" oninput="search()">
+        <!--            <input type="text" hidden name="action" value="findName">-->
+        <h3>
+            <button type="submit" class="btn btn-success">Find</button>
+        </h3>
+    </form>
+    <br>
+
+    <h2>DANH SÁCH NHÂN VIÊN</h2>
+
+    <table class="table">
+        <thead>
+        <tr>
+            <td>STT</td>
+            <td>NAME</td>
+            <td>ADDRESS</td>
+            <td>BIRTHDAY</td>
+            <td>AVATAR</td>
+            <td>EMAIL</td>
+            <td>PHONE</td>
+            <td>CLASSROOM</td>
+        </tr>
+        </thead>
+        <tbody id="tbody">
+        <tr th:each="sv,loop:${listPage}">
+            <td th:text="${loop.count}"></td>
+            <td th:text="${sv.name}"></td>
+            <td th:text="${sv.address}"></td>
+            <td th:text="${sv.birthday}"></td>
+            <td><img th:src="${sv.avatar}" width="130" height="100"></td>
+            <td th:text="${sv.email}"></td>
+            <td th:text="${sv.phone}"></td>
+            <td th:text="${sv.classRoom.name}"></td>
+            <td><a th:href="@{/edit/{id}(id=${sv.id})}" class="btn btn-warning">EDIT</a></td>
+            <td><a th:href="@{/delete/{id}(id=${sv.id})}" class="btn btn-danger">DELETE</a></td>
+        </tr>
+    </table>
+    <br>
+    <span><a th:if="${listPage.hasPrevious()}" th:href="@{/home(page=${listPage.number -1})}"
+             class="btn btn-primary"><< Previous</a></span>
+
+    <span th:text="${listPage.number +1}"></span>/<span th:text="${listPage.totalPages}"></span>
+
+    <span><a th:if="${listPage.hasNext()}" th:href="@{/home(page=${listPage.number +1})}" class="btn btn-primary">Next >></a></span>
+
+    </tbody>
+</div>
+</body>
+</html>
+<script>
+    function search() {
+        //lấy đc tên trong ô nhập :
+        let name = document.getElementById("findName").value;
+        let url = "http://localhost:8080/students/api/" + name;
+
+        $.ajax({
+            headers: {
+                'Accept': 'application/json'//bắt buộc server phải trả về  dạng json
+            },
+            type: "GET",
+            url: url, //gọi đến url API
+            //xử lý khi thành công
+            success: function (data) {
+                // console.log(data)//dữ liệu dưới dạng data ẩn
+                document.getElementById("tbody").innerHTML=showData(data.content)
+            },
+            error: function (err) {
+                alert(err)
+            }
+        })
+    }
+
+    function showData(arrStudent) {
+        let str = "";
+        for (let i = 0; i < arrStudent.length; i++) {
+            str += ` <tr>
+            <td>${i+1}</td>
+            <td>${arrStudent[i].name}</td>
+            <td>${arrStudent[i].address}</td>
+            <td>${arrStudent[i].birthday}</td>
+            <td><img src="${arrStudent[i].avatar}" width="130" height="100"></td>
+            <td>${arrStudent[i].phone}</td>
+            <td>${arrStudent[i].email}</td>
+            <td><a  class="btn btn-warning">EDIT</a></td>
+            <td><a  class="btn btn-danger">DELETE</a></td>
+        </tr>`
+        }
+        return str;
+    }
+</script>
